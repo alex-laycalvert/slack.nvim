@@ -1,12 +1,12 @@
 {
   "name": "slack.nvim",
   "version": "0.0.1",
-  "description": "",
+  "description": "A Neovim plugin integrating Slack",
   "main": "./dist/index.js",
-  "source": "./index.ts",
+  "source": "./src/index.ts",
   "scripts": {
-      "build": "tsc",
-      "build:watch": "tsc --watch",
+    "build": "tsc",
+    "build:watch": "tsc --watch"
   },
   "keywords": [],
   "author": "",
@@ -17,7 +17,8 @@
     "typescript": "^4.8.4"
   },
   "dependencies": {
-    "@slack/bolt": "^3.12.1",
-    "neovim": "^4.10.1"
+    "axios": "^0.27.2",
+    "neovim": "^4.10.1",
+    "node-fetch": "^3.2.10"
   }
 }
