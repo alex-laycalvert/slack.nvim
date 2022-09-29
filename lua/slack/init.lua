@@ -7,6 +7,7 @@ local M = {}
 
 local config = require('slack.config')
 local api = require('slack.api')
+local slack = require('slack.windows.slack')
 
 local setup_complete = false
 
@@ -71,6 +72,8 @@ M.run = function ()
     else
         print('Error: ' .. hist_res.error)
     end
+
+    slack.open()
 end
 
 return M
