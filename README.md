@@ -4,14 +4,10 @@ A Neovim Lua plugin to integrate Slack.
 
 ***IMPORTANT NOTICE***
 
-This plugin will most likely get abandoned in it's current form because of various complications
-related to dealing with the Slack API in Lua. To maintain an up to date list of messages in a channel
-using Lua, I either have to constantly poll the API every few seconds to get the latest history or
-I can do it the efficient way and make a separate application that subscribes to the Slack API
-system.
+Because of various complications with using Lua to implement web sockets that is fast and easy to use,
+I have decided to make this a standalone terminal TUI that I will then port to Neovim.
 
-I'll most likely end up making a standalone terminal application in something like Node.js and then
-porting it to Neovim.
+You can check out the progress [here](https://github.com/alex-laycalvert/slacker)
 
 ***WORK IN PROGRESS ***
 
