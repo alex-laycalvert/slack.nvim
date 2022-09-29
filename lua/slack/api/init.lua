@@ -10,36 +10,32 @@ local json = require('slack.utils.json')
 -- ok {boolean} - If the requests was successful
 -- error {string} - The error if unsuccessful
 M.test_auth = function ()
-    local response = curl.post('https://slack.com/api/auth.test', {
+    return curl.post('https://slack.com/api/auth.test', {
         ['Content-Type'] = 'application/json',
         ['Authorization'] = 'Bearer ' .. config.opts.slack_api_token
     })
-    local response_json = json.decode(response[1])
-    return response_json
 end
 
 -- Returns a list of channels attached to the given app
 M.list_channels = function ()
-    local response = curl.get('https://slack.com/api/conversations.list', {
+    return curl.get('https://slack.com/api/conversations.list', {
         ['Content-Type'] = 'application/x-www-form-urlencoded',
         ['Authorization'] = 'Bearer ' .. config.opts.slack_api_token
     })
-    local response_json = json.decode(response[1])
-    return response_json
 end
 
 M.get_channel_history = function (channel)
-    local response = curl.get('https://slack.com/api/conversations.history', {
+    return curl.get('https://slack.com/api/conversations.history?channel=' .. channel, {
         ['Content-Type'] = 'application/json',
         ['Authorization'] = 'Bearer ' .. config.opts.slack_api_token,
-        ['{ channel'] = channel .. '}'
     })
-    for k, v in pairs(response) do
-        print(k, v)
-    end
-    if response == nil then return nil end
-    -- local response_json = json.decode(response[1])
-    return response
+end
+
+M.get_users = function ()
+    return curl.get('https://slack.com/api/users.list', {
+        ['Content-Type'] = 'application/www-form-urlencoded',
+        ['Authorization'] = 'Bearer ' .. config.opts.slack_api_token,
+    })
 end
 
 return M

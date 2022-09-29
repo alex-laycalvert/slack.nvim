@@ -1,5 +1,7 @@
 local M = {}
 
+local json = require('slack.utils.json')
+
 M.curl = function (url, method, header, data)
     if url == nil then return nil end
     if method == nil then return nil end
@@ -14,8 +16,13 @@ M.curl = function (url, method, header, data)
             curl_command = curl_command .. '-d "' .. data_key .. ': ' .. data_value .. '" '
         end
     end
-    curl_command = curl_command .. url
-    return vim.fn.systemlist(curl_command)
+    curl_command = curl_command .. '"' .. url .. '"'
+    local response = vim.fn.systemlist(curl_command)
+    local response_str = ''
+    for _, v in pairs(response) do
+        response_str = response_str .. v
+    end
+    return json.decode(response_str)
 end
 
 M.get = function (url, header, data)
