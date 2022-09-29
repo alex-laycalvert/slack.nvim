@@ -17,7 +17,7 @@ M.test_auth = function ()
 end
 
 -- Returns a list of channels attached to the given app
-M.list_channels = function ()
+M.get_channels = function ()
     return curl.get('https://slack.com/api/conversations.list', {
         ['Content-Type'] = 'application/x-www-form-urlencoded',
         ['Authorization'] = 'Bearer ' .. config.opts.slack_api_token

@@ -7,7 +7,7 @@ local M = {}
 
 local config = require('slack.config')
 local api = require('slack.api')
-local slack = require('slack.windows.slack')
+local navbar = require('slack.windows.navbar')
 
 local setup_complete = false
 
@@ -32,48 +32,49 @@ M.run = function ()
     else
         print('Slack Authentication Unsuccessful')
         print('Error: ' .. auth_res.error)
+        return
     end
 
-    local users = {}
+    -- local users = {}
 
-    local users_res = api.get_users()
-    print('Getting Users...\n')
-    if users_res.ok then
-        print('Found Users:')
-        for k, v in pairs(users_res.members) do
-            print('User: ' .. v.profile.real_name_normalized)
-            print('ID  : ' .. v.id)
-            print('')
-            users[v.id] = v
-        end
-    else
-        print('Error: ' .. auth_res.error)
-    end
+    -- local users_res = api.get_users()
+    -- print('Getting Users...\n')
+    -- if users_res.ok then
+    --     print('Found Users:')
+    --     for k, v in pairs(users_res.members) do
+    --         print('User: ' .. v.profile.real_name_normalized)
+    --         print('ID  : ' .. v.id)
+    --         print('')
+    --         users[v.id] = v
+    --     end
+    -- else
+    --     print('Error: ' .. auth_res.error)
+    -- end
 
-    local conv_res = api.list_channels()
-    local channels = {}
-    local general = {}
-    if conv_res.ok then
-        channels = conv_res.channels
-    end
+    -- local conv_res = api.list_channels()
+    -- local channels = {}
+    -- local general = {}
+    -- if conv_res.ok then
+    --     channels = conv_res.channels
+    -- end
 
-    print('Channels Found:')
-    for k, v in pairs(channels) do
-        print('  ' .. v.name_normalized)
-    end
+    -- print('Channels Found:')
+    -- for k, v in pairs(channels) do
+    --     print('  ' .. v.name_normalized)
+    -- end
 
-    print('Getting history from ' .. channels[1].name_normalized .. '...')
-    local hist_res = api.get_channel_history(channels[1].id)
-    if hist_res.ok then
-        print('Messages in ' .. channels[1].name_normalized .. ':')
-        for k, v in pairs(hist_res.messages) do
-            print('  ' .. users[v.user].profile.display_name_normalized .. '> ' .. v.text)
-        end
-    else
-        print('Error: ' .. hist_res.error)
-    end
+    -- print('Getting history from ' .. channels[1].name_normalized .. '...')
+    -- local hist_res = api.get_channel_history(channels[1].id)
+    -- if hist_res.ok then
+    --     print('Messages in ' .. channels[1].name_normalized .. ':')
+    --     for k, v in pairs(hist_res.messages) do
+    --         print('  ' .. users[v.user].profile.display_name_normalized .. '> ' .. v.text)
+    --     end
+    -- else
+    --     print('Error: ' .. hist_res.error)
+    -- end
 
-    slack.open()
+    navbar.open()
 end
 
 return M
