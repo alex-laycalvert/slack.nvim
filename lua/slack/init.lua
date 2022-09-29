@@ -8,6 +8,7 @@ local M = {}
 local config = require('slack.config')
 local api = require('slack.api')
 local navbar = require('slack.windows.navbar')
+local chat_display = require('slack.windows.chat_display')
 
 local setup_complete = false
 

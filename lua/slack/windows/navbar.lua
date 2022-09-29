@@ -1,3 +1,8 @@
+-- slack.nvim/lua/slack/windows/navbar.lua
+-- alex-laycalvert
+--
+-- https://github.com/alex-laycalvert/slack.nvim
+
 local M = {
     channels_collapsed = false,
     collapsed_channel_header = '  Channels',
@@ -6,12 +11,13 @@ local M = {
     items = {},
     first_item_line = 3,
     last_item_line = 4,
-    selected_channel = nil,
+    selected_item = -1,
     cursor_pos = -1,
-    width = 35,
 }
 
+local config = require('slack.config')
 local api = require('slack.api')
+local chat_display = require('slack.windows.chat_display')
 
 local buf = -1
 local win = -1
@@ -36,23 +42,27 @@ local function open_buffer ()
         ':lua require("slack.windows.navbar").select()<CR>',
         { noremap = true, silent = true, }
     )
+    vim.api.nvim_buf_set_keymap(
+        buf ,'n', 'q',
+        ':lua require("slack.windows.navbar").close()<CR>',
+        { noremap = true, silent = true, }
+    )
 end
 
 local function open_window ()
     if win > 0 then return end
     if buf < 0 then open_buffer() end
     local gheight = vim.api.nvim_list_uis()[1].height
-
     local win_opts = {
         relative = 'win',
-        width = M.width,
+        width = config.opts.navbar_width,
         height = gheight,
         row = 0,
         col = 0,
     }
-
     win = vim.api.nvim_open_win(buf, true, win_opts)
     vim.api.nvim_win_set_option(win, 'cursorline', true)
+    vim.api.nvim_win_set_option(win, 'number', false)
 end
 
 local function update_view ()
@@ -64,17 +74,15 @@ local function update_view ()
     vim.api.nvim_buf_set_lines(buf, 1, -1, false, {
         channel_header
     })
-    local line_num = 2
-    for k, v in pairs(M.channels) do
+    for k, v in pairs(M.items) do
         local text = '\t'
-        if M.selected_channel == k then
+        if M.selected_item == k then
             text = text .. ''
         end
-        text = text .. '#' .. k
-        vim.api.nvim_buf_set_lines(buf, line_num, -1, false, {
+        text = text .. '#' .. v.name
+        vim.api.nvim_buf_set_lines(buf, k, -1, false, {
             text
         })
-        line_num = line_num + 1
     end
     vim.api.nvim_buf_set_option(buf, 'modifiable', false)
     vim.api.nvim_win_set_cursor(win, { M.cursor_pos, 0 })
@@ -97,9 +105,11 @@ M.goto_prev = function ()
 end
 
 M.select = function ()
+    chat_display.close()
     if M.items[M.cursor_pos] == nil then return end
     if M.items[M.cursor_pos].type == 'channel' then
-        M.selected_channel = M.items[M.cursor_pos].name
+        M.selected_item = M.cursor_pos
+        chat_display.open(M.channels[M.items[M.selected_item].name])
     end
     update_view()
 end
@@ -119,10 +129,12 @@ M.open = function ()
         current_line = current_line + 1
     end
     M.cursor_pos = M.first_item_line
+    M.selected_item = -1
     update_view()
 end                                                             
 
 M.close = function ()
+    chat_display.close()
     if win > 0 then
         vim.api.nvim_win_close(win, true)
     end
